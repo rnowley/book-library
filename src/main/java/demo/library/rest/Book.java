@@ -6,6 +6,16 @@ import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
+/*
+
+{
+	"title": "Lord of the Rings",
+	"publisher": "Harper Collins",
+	"author": "Tolkein, J.R.R",
+	"isbn": "1234567890123",
+	"datePublished": "2011-12-10"
+}
+ */
 public class Book {
 
     private Long id;
@@ -14,10 +24,10 @@ public class Book {
     private String title;
 
     @NotNull
-    private String publisher;
+    private Publisher publisher;
 
     @NotNull
-    private String author;
+    private Author author;
 
     @NotNull
     @Size(min = 9, max = 13)
@@ -25,12 +35,15 @@ public class Book {
 
     private Date datePublished;
 
-    public Book(String title, String publisher, String author, String ISBN,
+    public Book() {
+    }
+
+    public Book(String title, Publisher publisher, Author author, String ISBN,
             Date datePublished) {
         this(null, title, publisher, author, ISBN, datePublished);
     }
 
-    public Book(Long id, String title, String publisher, String author,
+    public Book(Long id, String title, Publisher publisher, Author author,
             String ISBN, Date datePublished) {
         this.id = id;
         this.title = title;
@@ -71,28 +84,28 @@ public class Book {
     /**
      * @return the publisher
      */
-    public String getPublisher() {
+    public Publisher getPublisher() {
         return publisher;
     }
 
     /**
      * @param publisher the publisher to set
      */
-    public void setPublisher(String publisher) {
+    public void setPublisher(Publisher publisher) {
         this.publisher = publisher;
     }
 
     /**
      * @return the author
      */
-    public String getAuthor() {
+    public Author getAuthor() {
         return author;
     }
 
     /**
      * @param author the author to set
      */
-    public void setAuthor(String author) {
+    public void setAuthor(Author author) {
         this.author = author;
     }
 

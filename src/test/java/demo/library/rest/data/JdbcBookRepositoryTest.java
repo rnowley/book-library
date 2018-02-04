@@ -1,6 +1,8 @@
 package demo.library.rest.data;
 
+import demo.library.rest.Author;
 import demo.library.rest.Book;
+import demo.library.rest.Publisher;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import static org.junit.Assert.*;
@@ -45,8 +47,10 @@ public class JdbcBookRepositoryTest {
         assertEquals(3, bookRepository.count());
         Calendar date = new GregorianCalendar();
         date.set(2010, 10, 28);
+        Publisher publisher = new Publisher(4L, "No Starch Press");
+        Author author = new Author(4L, "Kerrisk", "Michael");
         Book newBook = new Book(null, "The Linux Programming Interface",
-                "No Starch Press", "Kerrisk, Michael", "9781593272203", date.getTime());
+                publisher, author, "9781593272203", date.getTime());
         Book saved = bookRepository.save(newBook);
         assertEquals(4, bookRepository.count());
         assertEquals(4, saved.getId().longValue());

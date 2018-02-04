@@ -25,36 +25,36 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class BookController {
 
     private static final String MAX_LONG_AS_STRING = "9223372036854775807";
-    private BookRepository bookRespository;
+    private BookRepository bookRepository;
 
     @Autowired
     public BookController(BookRepository bookRepository) {
-        this.bookRespository = bookRepository;
+        this.bookRepository = bookRepository;
     }
 
     @RequestMapping(method = RequestMethod.GET, produces = "application/json")
     public List<Book> books(
             @RequestParam(value = "max", defaultValue = MAX_LONG_AS_STRING) long max,
             @RequestParam(value = "count", defaultValue = "20") int count) {
-        return bookRespository.findBooks(max, count);
+        return bookRepository.findBooks(max, count);
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET,
             produces = "application/json")
     public Book bookById(@PathVariable Long id) {
-        return bookRespository.findOne(id);
+        return bookRepository.findOne(id);
     }
 
     @RequestMapping(value = "/isbn/{isbn}", method = RequestMethod.GET,
             produces = "application/json")
     public Book bookByISBN(@PathVariable String isbn) {
-        return bookRespository.findByISBN(isbn);
+        return bookRepository.findByISBN(isbn);
     }
 
     @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Book> saveBook(@RequestBody Book book, UriComponentsBuilder ucb) {
-        Book saved = bookRespository.save(book);
+        Book saved = bookRepository.save(book);
 
         HttpHeaders headers = new HttpHeaders();
         URI locationUri = ucb.path("/books/")
