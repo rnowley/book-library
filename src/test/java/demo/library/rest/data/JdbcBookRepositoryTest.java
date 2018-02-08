@@ -55,4 +55,15 @@ public class JdbcBookRepositoryTest {
         assertEquals(4, bookRepository.count());
         assertEquals(4, saved.getId().longValue());
     }
+
+    @Test
+    @Transactional
+    public void delete() {
+        assertEquals(3, bookRepository.count());
+        assertNotNull(bookRepository.findOne(2));
+        bookRepository.delete(2L);
+        assertEquals(2, bookRepository.count());
+        assertNotNull(bookRepository.findOne(1));
+        assertNotNull(bookRepository.findOne(3));
+    }
 }

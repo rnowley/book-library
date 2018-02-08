@@ -30,3 +30,4 @@ values ('No Starch Press');
 
 insert into Author (lastName, firstName)
 values ('Kerrisk', 'Michael');
+

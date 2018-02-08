@@ -32,6 +32,16 @@ public class JdbcConfig {
     }
 
     @Bean
+    public AuthorRepository authorRepository(JdbcTemplate jdbcTemplate) {
+        return new JdbcAuthorRepository(jdbcTemplate);
+    }
+
+    @Bean
+    public PublisherRepository publisherRepository(JdbcTemplate jdbcTemplate) {
+        return new JdbcPublisherRepository(jdbcTemplate);
+    }
+
+    @Bean
     public PlatformTransactionManager transactionManager(DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }

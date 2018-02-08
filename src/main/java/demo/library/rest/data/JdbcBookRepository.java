@@ -87,6 +87,11 @@ public class JdbcBookRepository implements BookRepository {
                 + " from Book", Long.class);
     }
 
+    @Override
+    public void delete(long id) {
+        jdbc.update("delete from Book where id=?", id);
+    }
+
     private static class BookRowMapper implements RowMapper<Book> {
 
         @Override
