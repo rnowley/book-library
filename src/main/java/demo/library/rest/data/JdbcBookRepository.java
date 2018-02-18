@@ -8,9 +8,11 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import org.simpleflatmapper.jdbc.spring.JdbcTemplateMapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
@@ -27,21 +29,25 @@ public class JdbcBookRepository implements BookRepository {
 
     @Override
     public List<Book> findBooks(long max, int count) {
-        return jdbc.query(
+        List<Book> results = jdbc.query(
                 "select Book.id, Book.title, Publisher.id as publisherId, Publisher.name as name, Author.id as authorId, Author.lastName as lastName, Author.firstName as firstName, Book.isbn, Book.date_published"
                 + " from Book, Author, Publisher"
                 + " where Book.id < ?"
                 + " order by Book.date_published desc limit ?",
-                new BookRowMapper(), max, count);
+                resultSetExtractor, max, count);
+        return results;
     }
 
     @Override
     public Book findByISBN(String isbn) {
-        return jdbc.queryForObject(
-                "select Book.id, Book.title, Publisher.id as publisherId, Publisher.name as name, Author.id as authorId, Author.lastName as lastName, Author.firstName as firstName, Book.isbn, Book.date_published"
-                + " from Book, Author, Publisher"
-                + " where Book.publisher = Publisher.id and Book.author = Author.id and Book.isbn = ?",
-                new BookRowMapper(), isbn);
+        Book result = jdbc.queryForObject(
+                "select Book.id, Book.title, Book.isbn, Book.date_published, Publisher.id as publisher_Id, Publisher.name as publisher_name, Author.id as author_id, Author.lastName as author_lastName, Author.firstName as author_firstName"
+                + " from Book"
+                + " left outer join Author on Book.author = author.id"
+                + " left outer join Publisher on Book.publisher = publisher.id"
+                + " where Book.isbn = ?",
+                bookResultSetExtractor, isbn);
+        return result;
     }
 
     @Override
@@ -49,10 +55,10 @@ public class JdbcBookRepository implements BookRepository {
 
         try {
             return jdbc.queryForObject(
-                    "select Book.id, Book.title, Publisher.id as publisherId, Publisher.name as name, Author.id as authorId, Author.lastName as lastName, Author.firstName as firstName, Book.isbn, Book.date_published"
+                    "select Book.id, Book.title, Book.isbn, Book.date_published, Publisher.id as publisher_Id, Publisher.name as publisher_name, Author.id as author_Id, Author.lastName as author_lastName, Author.firstName as author_firstName"
                     + " from Book, Author, Publisher"
                     + " where Book.publisher = Publisher.id and Book.author = Author.id and Book.id = ?",
-                    new BookRowMapper(), id);
+                    bookResultSetExtractor, id);
         } catch (EmptyResultDataAccessException e) {
             throw new BookNotFoundException(id);
         }
@@ -113,5 +119,16 @@ public class JdbcBookRepository implements BookRepository {
                     resultSet.getTime("date_published"));
         }
     }
+
+    private final ResultSetExtractor<List<Book>> resultSetExtractor
+            = JdbcTemplateMapperFactory
+                    .newInstance()
+                    .addKeys("id")
+                    .newResultSetExtractor(Book.class);
+
+    private final RowMapper<Book> bookResultSetExtractor
+            = JdbcTemplateMapperFactory
+                    .newInstance()
+                    .newRowMapper(Book.class);
 
 }

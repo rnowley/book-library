@@ -29,14 +29,26 @@ public class JdbcBookRepositoryTest {
     public void findByISBN() {
         Book result = bookRepository.findByISBN("9780399255373");
         assertEquals("The Day the Crayons Quit", result.getTitle());
+        assertEquals(2L, (long) result.getAuthor().getId());
+        assertEquals("Daywalt", result.getAuthor().getLastName());
+        assertEquals("Drew", result.getAuthor().getFirstName());
+        assertEquals(2L, (long) result.getPublisher().getId());
+        assertEquals("Philomel Books", result.getPublisher().getName());
     }
 
     @Test
     public void findOne() {
         Book result = bookRepository.findOne(1L);
         assertEquals("9780199686766", result.getISBN());
+        assertEquals(1L, (long) result.getAuthor().getId());
+        assertEquals("Joshi", result.getAuthor().getLastName());
+        assertEquals("Pankaj S.", result.getAuthor().getFirstName());
+        assertEquals(1L, (long) result.getPublisher().getId());
+        assertEquals("Oxford University Press", result.getPublisher().getName());
+
         result = bookRepository.findOne(2L);
         assertEquals("9780399255373", result.getISBN());
+
         result = bookRepository.findOne(3L);
         assertEquals("9781101885376", result.getISBN());
     }
