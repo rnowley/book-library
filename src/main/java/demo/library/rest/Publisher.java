@@ -1,7 +1,10 @@
 package demo.library.rest;
 
+import org.simpleflatmapper.map.annotation.Key;
+
 public class Publisher {
 
+    @Key
     private final Long id;
 
     private String name;

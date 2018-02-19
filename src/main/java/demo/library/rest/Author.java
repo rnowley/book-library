@@ -1,11 +1,14 @@
 package demo.library.rest;
 
+import org.simpleflatmapper.map.annotation.Key;
+
 /**
  *
  * @author raymond
  */
 public class Author {
 
+    @Key
     private final Long id;
 
     private String lastName;

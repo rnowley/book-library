@@ -3,8 +3,10 @@ package demo.library.rest.data;
 import demo.library.rest.Author;
 import demo.library.rest.Book;
 import demo.library.rest.Publisher;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,9 +31,10 @@ public class JdbcBookRepositoryTest {
     public void findByISBN() {
         Book result = bookRepository.findByISBN("9780399255373");
         assertEquals("The Day the Crayons Quit", result.getTitle());
-        assertEquals(2L, (long) result.getAuthor().getId());
-        assertEquals("Daywalt", result.getAuthor().getLastName());
-        assertEquals("Drew", result.getAuthor().getFirstName());
+        assertEquals(1L, (long) result.getAuthor().size());
+        assertEquals(2L, (long) result.getAuthor().get(0).getId());
+        assertEquals("Daywalt", result.getAuthor().get(0).getLastName());
+        assertEquals("Drew", result.getAuthor().get(0).getFirstName());
         assertEquals(2L, (long) result.getPublisher().getId());
         assertEquals("Philomel Books", result.getPublisher().getName());
     }
@@ -40,9 +43,9 @@ public class JdbcBookRepositoryTest {
     public void findOne() {
         Book result = bookRepository.findOne(1L);
         assertEquals("9780199686766", result.getISBN());
-        assertEquals(1L, (long) result.getAuthor().getId());
-        assertEquals("Joshi", result.getAuthor().getLastName());
-        assertEquals("Pankaj S.", result.getAuthor().getFirstName());
+        assertEquals(1L, (long) result.getAuthor().get(0).getId());
+        assertEquals("Joshi", result.getAuthor().get(0).getLastName());
+        assertEquals("Pankaj S.", result.getAuthor().get(0).getFirstName());
         assertEquals(1L, (long) result.getPublisher().getId());
         assertEquals("Oxford University Press", result.getPublisher().getName());
 
@@ -61,8 +64,10 @@ public class JdbcBookRepositoryTest {
         date.set(2010, 10, 28);
         Publisher publisher = new Publisher(4L, "No Starch Press");
         Author author = new Author(4L, "Kerrisk", "Michael");
+        List<Author> authorList = new ArrayList<>();
+        authorList.add(author);
         Book newBook = new Book(null, "The Linux Programming Interface",
-                publisher, author, "9781593272203", date.getTime());
+                publisher, authorList, "9781593272203", date.getTime());
         Book saved = bookRepository.save(newBook);
         assertEquals(4, bookRepository.count());
         assertEquals(4, saved.getId().longValue());

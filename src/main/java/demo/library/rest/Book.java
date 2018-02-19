@@ -1,10 +1,13 @@
 package demo.library.rest;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.simpleflatmapper.map.annotation.Key;
 
 /*
 
@@ -18,6 +21,7 @@ import org.apache.commons.lang3.builder.HashCodeBuilder;
  */
 public class Book {
 
+    @Key
     private Long id;
 
     @NotNull
@@ -27,7 +31,7 @@ public class Book {
     private Publisher publisher;
 
     @NotNull
-    private Author author;
+    private List<Author> author = new ArrayList<>();
 
     @NotNull
     @Size(min = 9, max = 13)
@@ -38,17 +42,21 @@ public class Book {
     public Book() {
     }
 
-    public Book(String title, Publisher publisher, Author author, String ISBN,
+    public Book(String title, Publisher publisher, List<Author> authors, String ISBN,
             Date datePublished) {
-        this(null, title, publisher, author, ISBN, datePublished);
+        this(null, title, publisher, authors, ISBN, datePublished);
     }
 
-    public Book(Long id, String title, Publisher publisher, Author author,
+    public Book(Long id, String title, Publisher publisher, List<Author> authors,
             String ISBN, Date datePublished) {
         this.id = id;
         this.title = title;
         this.publisher = publisher;
-        this.author = author;
+
+        for (Author item : authors) {
+            this.author.add(item);
+        }
+
         this.ISBN = ISBN;
         this.datePublished = datePublished;
     }
@@ -98,14 +106,14 @@ public class Book {
     /**
      * @return the author
      */
-    public Author getAuthor() {
+    public List<Author> getAuthor() {
         return author;
     }
 
     /**
      * @param author the author to set
      */
-    public void setAuthor(Author author) {
+    public void setAuthor(List<Author> author) {
         this.author = author;
     }
 
